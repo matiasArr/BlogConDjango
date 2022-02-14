@@ -1,24 +1,27 @@
 from django.shortcuts import redirect, render, get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.views import LoginView
 from .models import Post, Like, PostView
-from .forms import PostForm, CommentForm
-
+from .forms import PostForm, CommentForm, LoginForm
+from django.contrib.auth import admin as ad
 # Create your views here.
+
+
+class LoginUser(LoginView):
+    form_class = LoginForm
+    template_name = 'account/login.html'
+    success_url = '/'
 
 class PostListView(LoginRequiredMixin, ListView):
     model = Post
     login_url = 'login/'
 
 
-    '''
-    def get(self, args, **kwargs):
-        if self.request.user.is_anonymous:
-            return redirect('account_login')
-    '''
 
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
+    login_url = 'login/'
 
     #crear un comentario 
     def post(self, args,**kwargs):
@@ -30,12 +33,14 @@ class PostDetailView(DetailView):
             comment.post = post
             comment.save()
             return redirect('detail-post', slug=post.slug)
-    
+        
+
     #envia el formulario para escribir un comentario 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
             'form': CommentForm()
+            
         }) 
         return context
 
@@ -45,13 +50,15 @@ class PostDetailView(DetailView):
         PostView.objects.get_or_create(user=self.request.user, post=object)
         return object
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
+    login_url = '/login'
     success_url = '/'
-    
-    #agregar metodo que admita solo al admin crear un post
+    permission_denied_message = 'usted no esta registrado'
 
+    #agregar metodo que admita solo al admin crear un post
+   
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
@@ -59,6 +66,7 @@ class PostCreateView(CreateView):
         })
         return context
 
+#debe requerir login 
 class PostUpdateView(UpdateView):
     form_class = PostForm
     model = Post
@@ -70,7 +78,7 @@ class PostUpdateView(UpdateView):
             'view_type': 'Actualizar'
         })
         return context
-    
+#debe requerir login y una template    
 class PostDeleteView(DeleteView):
     model = Post
     success_url = '/'

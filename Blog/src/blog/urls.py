@@ -7,13 +7,14 @@ from posts.views import (
     PostDetailView,
     PostCreateView,
     PostUpdateView,
-    PostDeleteView
+    PostDeleteView,
+    LoginUser
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('allauth.urls')),
-    path('login/',include('allauth.urls'), name='account_login'),
+    path('login/', LoginUser.as_view(), name='account_login'),
     path('logout/',include('allauth.urls'), name='account_logout'),
     path('signup/',include('allauth.urls'), name='account_signup'),
     path('', PostListView.as_view(), name='list'),

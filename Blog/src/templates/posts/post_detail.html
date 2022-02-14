@@ -11,10 +11,18 @@
             <div style="padding: 10px;">
                 <p>{{ object.content }}</p>
             </div>
+            <div class="text-center">
+                <small> autor: {{ object.author }}</small>
+            </div>
+            <div>
+                <a href="{% url 'update-post' object.slug %}"><input type="button" class='btn btn-primary' value="Editar"></a>
+            </div>
+            <br />
             <p>Deja un comentario</p>
             <form action="" method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
+                <br />
                 <button class= 'btn btn-primary' type="submit">Comentar</button>
             </form>
             <hr />

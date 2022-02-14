@@ -1,29 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
+<div class="container">
+    <div class="row">
         {% for object in object_list %}
-            <div class="col-4">
-                <a href="{{ object.get_absolute_url }}">
+        <div class="col-4">
+            <a href="{{ object.get_absolute_url }}">
                 <div class="card" style="width: 18rem;">
                     <img src="{{ object.thumbnail.url }}" class="card-img-top" alt="...">
                     <div class="card-body">
-                    <h5 class="card-title">{{ object.title }}</h5>
-                    <p class="card-text"> {{ object.content|truncatechars:40 }}.</p>
-                    <p>
-                        <span>vistas: {{ object.get_views_count }}</span>
-                        <span>like: {{ object.get_like_count }}</span>
-                        <span>comentarios: {{ object.get_comment_count }}</span>
-                    </p>
-                    <p class="card-text">
-                        <span>{{ object.publish_date|timesince }} atras</span>
-                    </p>
-                    </div>
-                </div> 
-                </a>
-            </div>
-        {% endfor%}
+                        <h5 class="card-title">{{ object.title }}</h5>
+                        <p class="card-text"> {{ object.content|truncatechars:40 }}.</p>
+            </a>
+            <p>
+                <span>vistas: {{ object.get_views_count }}</span>
+                <span>like: {{ object.get_like_count }}</span>
+                <span>comentarios: {{ object.get_comment_count }}</span>
+            </p>
+            <p class="card-text">
+                <span>{{ object.publish_date|timesince }} atras</span>
+            </p>
         </div>
     </div>
+</div>
+{% endfor%}
+</div>
+</div>
 {% endblock content %}
