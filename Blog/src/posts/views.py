@@ -78,7 +78,7 @@ class PostUpdateView(UpdateView):
             'view_type': 'Actualizar'
         })
         return context
-#debe requerir login y una template    
+#debe requerir login     
 class PostDeleteView(DeleteView):
     model = Post
     success_url = '/'

@@ -1,19 +1,26 @@
 
 import os
+import environ
 from pathlib import Path
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f++tlhbmxahgp6t!flk&ajc5r4fg754yf8gb*!3fdblu0o60h='
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -33,6 +40,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'crispy_forms',
+    
     'posts',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -150,5 +158,6 @@ ACCOUNT_FORMS = {
 AUTH_USER_MODEL = 'posts.User'
 
 LOGIN_REDIRECT_URL = 'list'
+SIGNUP_REDIRECT_URL = 'login'
 
 

@@ -1,8 +1,5 @@
-from cProfile import label
-from collections import OrderedDict
-from logging import PlaceHolder
 from allauth import *
-from allauth.account.forms import LoginForm, PasswordField, set_form_field_order
+from allauth.account.forms import LoginForm, SignupForm , PasswordField, set_form_field_order
 from django.utils.translation import gettext_lazy as _
 from django import forms
 from .models import Post, Comment
@@ -58,4 +55,8 @@ class MyLoginForm(LoginForm):
         )
         self.fields["login"] = login_field
         set_form_field_order(self, ["login", "password", "remember"])
+
+class MySignupForm(SignupForm):
+    
+    pass
         
