@@ -8,6 +8,7 @@ from posts.views import (
     PostCreateView,
     PostUpdateView,
     PostDeleteView,
+    search,
     LoginUser
 )
 
@@ -18,6 +19,7 @@ urlpatterns = [
     path('logout/',include('allauth.urls'), name='account_logout'),
     path('signup/',include('allauth.urls'), name='account_signup'),
     path('', PostListView.as_view(), name='list'),
+    path('search/', search, name='search'),
     path('create/', PostCreateView.as_view(), name='create-post'),
     path('<slug>/', PostDetailView.as_view(), name='detail-post'),
     path('<slug>/update', PostUpdateView.as_view(), name='update-post'),

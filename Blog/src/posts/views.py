@@ -1,22 +1,32 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.views import LoginView
+#from django.contrib.auth.views import LoginView
 from .models import Post, Like, PostView
-from .forms import PostForm, CommentForm, LoginForm
+from .forms import PostForm, CommentForm, MyLoginForm
 from django.contrib.auth import admin as ad
+from django.http import JsonResponse
+from allauth.account.views import LoginView
 # Create your views here.
 
 
 class LoginUser(LoginView):
-    form_class = LoginForm
+    form_class = MyLoginForm
     template_name = 'account/login.html'
     success_url = '/'
+    
+
 
 class PostListView(LoginRequiredMixin, ListView):
     model = Post
     login_url = 'login/'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'list_view': 'list_posts'
+        })
+        return context
 
 
 class PostDetailView(LoginRequiredMixin, DetailView):
@@ -40,7 +50,6 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context.update({
             'form': CommentForm()
-            
         }) 
         return context
 
@@ -93,5 +102,13 @@ def like(request, slug):
     Like.objects.create(user=request.user, post=post)
     return redirect('detail-post', slug=slug)
     
+def search(request):
+    response = dict()
+    
+    if request.method == 'GET' and request.GET.get('q'):
+        word = request.GET.get('q')
+        posts = Post.objects.filter(title__contains= word)
 
+    response['posts'] = [ post.serializer for post in posts]
+    return JsonResponse(response)
 

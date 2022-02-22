@@ -11,6 +11,7 @@ env = environ.Env(
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Take environment variables from .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
@@ -39,7 +40,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    
     'crispy_forms',
+    'ckeditor',
     
     'posts',
 ]
@@ -158,6 +161,7 @@ ACCOUNT_FORMS = {
 AUTH_USER_MODEL = 'posts.User'
 
 LOGIN_REDIRECT_URL = 'list'
-SIGNUP_REDIRECT_URL = 'login'
-
-
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_SIGNUP_REDIRECT_URL = 'login'
+#REVISAR EN LA DOCUMENTACION DONDE ESTA REDIGIRENDO EL SIGNUP

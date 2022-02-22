@@ -1,10 +1,14 @@
 {% extends "base.html" %}
+{% load static %}
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 {% load crispy_forms_tags %}
 {% block content %}
     <div class="container">
         <h5>Deseas {{ view_type }}</h5>
         <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
+            {{ form.media }}
             {{ form|crispy }}
             <button class= 'btn btn-primary' type="submit">{{ view_type|title }}</button>
         </form>

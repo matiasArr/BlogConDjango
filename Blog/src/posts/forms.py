@@ -1,12 +1,16 @@
+from dataclasses import field, fields
+from tkinter import TRUE
 from allauth import *
 from allauth.account.forms import LoginForm, SignupForm , PasswordField, set_form_field_order
 from django.utils.translation import gettext_lazy as _
 from django import forms
 from .models import Post, Comment
+from ckeditor.widgets import CKEditorWidget
 
 
 
 class PostForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Post
         fields = ('__all__')
@@ -30,10 +34,25 @@ class CommentForm(forms.ModelForm):
             'content': _(''),
         }
 
-class MyLoginForm(LoginForm):
-    password = PasswordField(label=("Contraseña"), autocomplete="current-password")
-    remember = forms.BooleanField(label=("Recuerdame"), required=False)
 
+class MyLoginForm(LoginForm):
+    '''
+     # NO SE MUESTRAS LOS MENSAJES QUE TIENE POR DEFECTO ALLAUTH
+    '''
+    
+    password = PasswordField(
+        label=_("password"), 
+        required=True, 
+        widget=forms.PasswordInput(
+            attrs={
+                "type": "password",
+                "placeholder": _("contraseña")
+            }
+        )
+    )
+    
+    remember = forms.BooleanField(label=_("Recuerdame"), required=False)
+    
     error_messages = {
         "account_inactive": _("Esta cuenta está inactiva"),
         "email_password_mismatch": _(
@@ -47,16 +66,26 @@ class MyLoginForm(LoginForm):
         self.request = kwargs.pop("request", None)
         super(LoginForm, self).__init__(*args, **kwargs)
         login_widget = forms.TextInput(
-            attrs={"placeholder": _("Usuario"), "autocomplete": "username"}
+            attrs={"placeholder": _("usuario"), "autocomplete": "username"}
         )
+        
         login_field = forms.CharField(
-            label='Usuario',
+            label='',
             widget=login_widget
+            
+        )
+        password_widget = forms.PasswordInput(
+            attrs={"placeholder": _(""), "autocomplete": "password"}
+        )
+        password_field = PasswordField(
+            label='',
+            widget=password_widget
         )
         self.fields["login"] = login_field
+        self.fields["password"] = password_field
         set_form_field_order(self, ["login", "password", "remember"])
 
-class MySignupForm(SignupForm):
+    # modificar el form de signup para que se muestre de mejor manera
     
+class MySignupForm(SignupForm):
     pass
-        

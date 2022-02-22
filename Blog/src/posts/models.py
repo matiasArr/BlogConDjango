@@ -1,13 +1,16 @@
-from sqlite3 import Timestamp
+from turtle import title
 from django.db import models
 from django.shortcuts import reverse
 from django.contrib.auth.models import AbstractUser
-
-
+from allauth.account.adapter import DefaultAccountAdapter
+from ckeditor.fields import RichTextField
 # Create your models here.
 
 class User(AbstractUser):
     pass
+
+    def get_signup_redirect_url(self, request):
+        return reverse("account_login")
 
     def __str__(self):
         return self.username
@@ -15,7 +18,7 @@ class User(AbstractUser):
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
-    content = models.TextField()
+    content = RichTextField()
     thumbnail = models.ImageField()
     publish_date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
@@ -29,10 +32,18 @@ class Post(models.Model):
         return reverse("detail-post", kwargs={
             'slug': self.slug
         })
-    
+
+    ## NECESITO UNA FUNCION QUE ME RETORNO UN POST EN CONCRETO
     @property
     def comments(self):
         return self.comment_set.all()
+
+    @property
+    def serializer(self):
+        return {
+            'title': self.title,
+            'slug': self.slug
+        }
 
     @property
     def get_comment_count(self):

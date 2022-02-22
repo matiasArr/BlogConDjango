@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
+{% load account %}
 {% block content %}
     <div class="row">
         <div class="col-4 offset-4">
@@ -9,19 +9,35 @@
             <img src="{{ object.thumbnail.url }}" class="card-img-top">
 
             <div style="padding: 10px;">
-                <p>{{ object.content }}</p>
+                <p>{{ object.content|safe }}</p>
             </div>
             <div class="text-center">
                 <small> autor: {{ object.author }}</small>
             </div>
+            <!-- obtener el username 
+            if username == 'admin' or username == object.author 
+            NO FUNCIONA EL IGUAL EL USERNAME AL AUTOR
+            -->
             <div>
+                {% user_display user as username %}
+                {% if request.user ==  object.author %}
+
                 <a href="{% url 'update-post' object.slug %}"><input type="button" class='btn btn-primary' value="Editar"></a>
+                
+
+                {% else %}
+                
+                <p> no es el author </p>
+                {% endif %}    
+                
             </div>
+           
             <br />
             <p>Deja un comentario</p>
             <form action="" method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
+                
                 <br />
                 <button class= 'btn btn-primary' type="submit">Comentar</button>
             </form>
