@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -12,14 +13,12 @@ from allauth.account.views import LoginView
 
 class LoginUser(LoginView):
     form_class = MyLoginForm
-    template_name = 'account/login.html'
     success_url = '/'
     
 
 
-class PostListView(LoginRequiredMixin, ListView):
+class PostListView(ListView):
     model = Post
-    login_url = 'login/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -29,10 +28,8 @@ class PostListView(LoginRequiredMixin, ListView):
         return context
 
 
-class PostDetailView(LoginRequiredMixin, DetailView):
+class PostDetailView(DetailView):
     model = Post
-    login_url = 'login/'
-
     #crear un comentario 
     def post(self, args,**kwargs):
         form = CommentForm(self.request.POST)
@@ -59,11 +56,9 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         PostView.objects.get_or_create(user=self.request.user, post=object)
         return object
 
-class PostCreateView(LoginRequiredMixin, CreateView):
-    form_class = PostForm
+class PostCreateView(CreateView):
     model = Post
-    login_url = '/login'
-    success_url = '/'
+    form_class = PostForm
     permission_denied_message = 'usted no esta registrado'
 
     #agregar metodo que admita solo al admin crear un post
